@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Comp B</title>
+    <script>
+        (async () => {
+            console.log('### awaiting <my-hello> definition...');
+            await window.customElements.whenDefined('my-hello');
+            console.log('### <my-hello> defined!');
+        })();
+    </script>
+    <link rel="import" href="my-store.html">
+    <link rel="import" href="my-hello.html">
+    <link rel="import" href="my-store.html">
+</head>
+<body>
+    <my-hello who="No-one" why="revenge">
+        Arya Stark
+    </my-hello>
+    <my-hello who="World" disabled>
+        Sweetrobin
+    </my-hello>
+</body>
+</html>

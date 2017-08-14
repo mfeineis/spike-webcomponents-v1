@@ -1,0 +1,1 @@
+console.info('"common.js" loaded');

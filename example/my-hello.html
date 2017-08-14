@@ -1,0 +1,71 @@
+<template id="my-hello-template">
+    <b><slot></slot></b>
+</template>
+
+<script>
+
+    window.customElements.define('my-hello', class extends HTMLElement {
+
+        static get observedAttributes() {
+            return ['who', 'why', 'disabled'];
+        }
+
+        constructor() {
+            super();
+            console.log(this, 'constructor for "my-hello" called');
+            console.log('who? - ', this.getAttribute('who'));
+            console.log('why? - ', this.getAttribute('why'));
+            console.log('disabled? - ', this.getAttribute('disabled'));
+
+            const shadow = this.attachShadow({ mode: "open" });
+            shadow.innerHTML = `<div><b><slot></slot></b></div>`;
+
+            //const tmpl = document.querySelector('#my-hello-template');
+            //console.log('tmpl', tmpl);
+
+            //const clone = document.importNode(tmpl.content, true);
+            //this.appendChild(clone);
+        }
+
+        get disabled() {
+            return this.hasAttribute('disabled');
+        }
+
+        set disabled(val) {
+            // Reflect the value of `disabled` as an attribute.
+            if (val) {
+                this.setAttribute('disabled', 'disabled');
+            } else {
+                this.removeAttribute('disabled');
+            }
+        }        
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+
+            this.dispatchEvent(new CustomEvent("my-store-action", {
+                bubbles: true,
+                detail: {
+                    type: 'BLUBB',
+                    payload: {
+                        bla: 'plisch',
+                    },
+                },
+            }));
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+            //this.element = null;
+        }
+    });
+
+</script>
