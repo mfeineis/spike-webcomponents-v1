@@ -1,8 +1,13 @@
-<template id="my-hello-template">
-    <b><slot></slot></b>
+<template id="tmpl">
+    <b>
+        <slot></slot>
+        <sup><slot name="house"></slot></sup>
+    </b>
 </template>
 
 <script>
+
+(function (window, document) {
 
     window.customElements.define('my-hello', class extends HTMLElement {
 
@@ -17,14 +22,22 @@
             console.log('why? - ', this.getAttribute('why'));
             console.log('disabled? - ', this.getAttribute('disabled'));
 
-            const shadow = this.attachShadow({ mode: "open" });
-            shadow.innerHTML = `<div><b><slot></slot></b></div>`;
+            const shadow = this.attachShadow({ 
+                mode: "open" 
+            });
 
-            //const tmpl = document.querySelector('#my-hello-template');
-            //console.log('tmpl', tmpl);
+            //const link = document.querySelector('link[rel=import]');
+            //const content = link.import.querySelector('#tmpl');
+
+            const tmpl = document.querySelector('#tmpl');
+            shadow.appendChild(document.importNode(tmpl.content, true));
+
+            console.log('tmpl', tmpl, tmpl.content);
 
             //const clone = document.importNode(tmpl.content, true);
             //this.appendChild(clone);
+
+            this.disabled = this.getAttribute('disabled');
         }
 
         get disabled() {
@@ -51,9 +64,16 @@
         connectedCallback(...args) {
             console.log(this, 'connectedCallback', ...args);
 
+            if (this.disabled) {
+                console.warn('-> hardwired to self-destruct')
+            }
+
             this.dispatchEvent(new CustomEvent("my-store-action", {
-                bubbles: true,
+                bubbles: true, // A Boolean indicating whether the event bubbles. The default is false.
+                cancelable: false, // A Boolean indicating whether the event can be canceled. The default is false.
+                composed: false, // A Boolean indicating whether the event will trigger listeners outside of a shadow root. The default is false.
                 detail: {
+                    // optional and defaulting to null, of type any, that is an event-dependent value associated with the event.
                     type: 'BLUBB',
                     payload: {
                         bla: 'plisch',
@@ -68,4 +88,6 @@
         }
     });
 
+        
+}(window, document.currentScript.ownerDocument))
 </script>

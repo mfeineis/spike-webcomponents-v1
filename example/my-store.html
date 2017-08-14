@@ -1,9 +1,11 @@
 <script>
 
     // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
-    (function () {
+    (function (window, document) {
 
-        if ( typeof window.CustomEvent === "function" ) return false;
+        if (typeof window.CustomEvent === "function") {
+            return;
+        }
 
         function CustomEvent ( event, params ) {
             params = params || { bubbles: false, cancelable: false, detail: undefined };
@@ -13,27 +15,27 @@
         }
 
         CustomEvent.prototype = window.Event.prototype;
-
         window.CustomEvent = CustomEvent;
-    }());
 
-    (function (root) {
+    }(typeof window !== "undefined" ? window : global, document));
 
-        if (root.classList.contains('my-store--initialized')) {
+    (function (document, body) {
+
+        if (body.classList.contains('my-store--initialized')) {
             console.log('<my-core> already initialized, bailing out...');
             return;
         }
 
         console.log('initializing <my-store>');
 
-        root.addEventListener('my-store-action', function (...args) {
+        document.addEventListener('my-store-action', function (...args) {
             console.log(this, '<my-store-action>.addEventListener()', args);
         });
 
-        root.classList.add('my-store--initialized');
+        body.classList.add('my-store--initialized');
         console.log('<my-store> initialized');
 
-    }(document.body));
+    }(document, document.body));
 
 </script>
 <script src="common.js"></script>
