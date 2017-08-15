@@ -1,0 +1,104 @@
+<script>
+
+window.Elm = {
+    Hello: {
+        worker(flags) {
+            console.log('[Elm] Elm.Hello.worker(' + JSON.stringify(flags, null, '  ') + ')');
+            return {
+                ports: {
+                    fromElm: {
+                        subscribe(fn) {
+                            setTimeout(() => {
+                                fn({ dataFromElm: true });
+                            }, 1000);
+                        },
+                    },
+                    toElm: {
+                        send(data) {
+                            console.log('[Elm] app.ports.toElm.send(' + JSON.stringify(data, null, '  '));
+                        },
+                    },
+                },
+            };
+        },
+    },
+};
+
+</script>
+<script>
+
+(function (window, document) {
+
+    const SOME_ACTION = 'SOME_ACTION';
+    const ANOTHER_ACTION = 'ANOTHER_ACTION';
+
+    window.customElements.define('elm-crate', class extends HTMLElement {
+        constructor() {
+            super();
+
+            const flags = this.initialFlags = {};
+
+            for (const { nodeName } of this.attributes) {
+                flags[nodeName] = this.getAttribute(nodeName);
+            }
+
+            const app = this.app = Elm.Hello.worker(flags);
+
+            app.ports.fromElm.subscribe(value => {
+                const e = new CustomEvent("my-store-action", {
+                    bubbles: true,
+                    scoped: false,
+                    detail: {
+                        type: SOME_ACTION,
+                        payload: value,
+                    },
+                });
+                this.dispatchEvent(e);
+
+                window.postMessage({
+                    type: ANOTHER_ACTION,
+                    payload: value,
+                }, this.getAttribute('domain') || '*');
+            });
+
+        }
+
+        static get observedAttributes() {
+            return ['who', 'why', 'domain'];
+        }
+
+        get domain() {
+            return this.getAttribute('domain');
+        }
+
+        set domain(value) {
+            this.setAttribute('domain', value);
+        }
+
+        get who() {
+            return this.getAttribute('who');
+        }
+
+        set who(value) {
+            this.setAttribute('who', value);
+        }
+
+        get why() {
+            return this.getAttribute('why');
+        }
+
+        set why(value) {
+            this.setAttribute('why', value);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+            this.app.ports.toElm.send({
+                [attr]: newValue,
+            });
+        }
+    });
+
+}(window, document.currentScript.ownerDocument))
+
+</script>

@@ -9,10 +9,16 @@
             await window.customElements.whenDefined('my-hello');
             console.log('### <my-hello> defined!');
         })();
+        (async () => {
+            console.log('### awaiting <elm-crate> definition...');
+            await window.customElements.whenDefined('elm-crate');
+            console.log('### <elm-crate> defined!');
+        })();
     </script>
     <link rel="import" href="my-store.html">
     <link rel="import" href="my-hello.html">
     <link rel="import" href="my-store.html">
+    <link rel="import" href="elm-crate.html">
 </head>
 <body>
     <my-hello who="No-one" why="revenge">
@@ -23,5 +29,7 @@
         Sweetrobin
         <span slot="house">Arryn</span>
     </my-hello>
+
+    <elm-crate who="Arya" why="Revenge" domain="http://localhost"></elm-crate>
 </body>
 </html>

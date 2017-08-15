@@ -28,8 +28,12 @@
 
         console.log('initializing <my-store>');
 
-        document.addEventListener('my-store-action', function (...args) {
-            console.log(this, '<my-store-action>.addEventListener()', args);
+        document.addEventListener('my-store-action', function (e) {
+            console.log('[DOMEvent]', this, '<my-store-action>.addEventListener()', e);
+        });
+
+        window.addEventListener('message', function (...args) {
+            console.log('[postMessage]', this, '<my-store-action>.onmessage()', ...args);
         });
 
         body.classList.add('my-store--initialized');
