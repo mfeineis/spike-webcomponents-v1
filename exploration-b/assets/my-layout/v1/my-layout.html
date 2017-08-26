@@ -1,0 +1,127 @@
+<link rel="import" href="../../my-core/v1/my-core.html">
+<style>
+
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    min-height: 100%;
+    padding: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+</style>
+<template id="my-layout-tmpl">
+    <style>
+
+    .my-layout__container {
+        display: flex;
+        flex-direction: column;
+
+        --header-height: 50px;
+    } 
+
+    .my-layout__header {
+        height: var(--header-height);
+    }
+
+    .my-layout__content {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        height: calc(100vh - var(--header-height));
+    }
+
+    .my-layout__sidebar-left {
+        flex: 1;
+        flex-shrink: 1;
+        order: 1;
+    }
+
+    .my-layout__main {
+        flex: 1;
+        flex-grow: 1;
+        order: 2;
+        /*overflow: auto;*/
+    }
+
+    .my-layout__sidebar-right {
+        flex: 1;
+        flex-shrink: 1;
+        order: 3;
+    }
+
+    </style>
+
+    <div class="my-layout__container">
+        <div class="my-layout__global-header">
+            <slot name="global-header"></slot>
+        </div>
+        <div class="my-layout__header">
+            <slot name="header"></slot>
+        </div>
+        <div class="my-layout__content">
+            <div class="my-layout__teaser">
+                <slot name="teaser"></slot>
+            </div>
+            <div class="my-layout__main">
+                <slot name="main"></slot>
+            </div>
+            <div class="my-layout__sidebar-left">
+                <slot name="sidebar-left"></slot>
+            </div>
+            <div class="my-layout__sidebar-right">
+                <slot name="sidebar-right"></slot>
+            </div>
+        </div>
+        <div class="my-layout__footer">
+            <slot name="footer"></slot>
+        </div>
+    </div>
+</template>
+
+<script>
+
+(function (window, document) {
+
+    window.customElements.define('my-layout', class extends HTMLElement {
+        constructor() {
+            super();
+
+            const tmpl = document.querySelector('#my-layout-tmpl');
+
+            const shadow = this.attachShadow({ 
+                mode: "open" 
+            });
+            shadow.appendChild(document.importNode(tmpl.content, true));
+
+            //this.appendChild(document.importNode(tmpl.content, true));
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+        }
+    });
+        
+}(window, document.currentScript.ownerDocument))
+
+</script>

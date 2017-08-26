@@ -1,0 +1,37 @@
+<script src="my-core.js"></script>
+<script>
+
+(function (window, document) {
+
+    window.customElements.define('my-core', class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+
+            window.postMessage({
+                type: 'MY_CORE_CONFIG_VIA_HTML',
+                payload: {
+                    config: 'html',
+                },
+            }, '*');
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+        }
+    });
+        
+}(window, document.currentScript.ownerDocument));
+
+</script>

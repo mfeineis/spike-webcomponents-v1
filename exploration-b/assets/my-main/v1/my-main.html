@@ -1,0 +1,85 @@
+<link rel="import" href="../../my-core/v1/my-core.html">
+<template id="my-main-tmpl">
+    <div style="background: #f60">
+        <b>my-main</b>
+
+        <ul>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+            <li>Content</li>
+        </ul>
+    </div>
+</template>
+<script>
+
+(function (window, document) {
+
+    window.customElements.define('my-main', class extends HTMLElement {
+        constructor() {
+            super();
+
+            const tmpl = document.querySelector('#my-main-tmpl');
+
+            //const shadow = this.attachShadow({ 
+            //    mode: "open",
+            //    //mode: "closed",
+            //});
+            //shadow.appendChild(document.importNode(tmpl.content, true));
+
+            this.appendChild(document.importNode(tmpl.content, true));
+
+            window.postMessage({
+                type: 'MY_MAIN_INIT',
+                payload: {
+                    initialized: true,
+                },
+            }, '*');
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+        }
+    });
+        
+}(window, document.currentScript.ownerDocument))
+
+</script>

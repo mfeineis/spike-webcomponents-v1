@@ -1,0 +1,50 @@
+<link rel="import" href="../../my-core/v1/my-core.html">
+<template id="my-header-tmpl">
+    <style>
+
+        .my-header__container {
+        }
+
+    </style>
+    <div class="my-header__container" style="background: #6f0">
+        <b>my-header</b>
+    </div>
+</template>
+<script>
+
+(function (window, document) {
+
+    window.customElements.define('my-header', class extends HTMLElement {
+        constructor() {
+            super();
+
+            const tmpl = document.querySelector('#my-header-tmpl');
+
+            //const shadow = this.attachShadow({ 
+            //    mode: "open", 
+            //});
+            //shadow.appendChild(document.importNode(tmpl.content, true));
+
+            this.appendChild(document.importNode(tmpl.content, true));
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+        }
+    });
+
+}(window, document.currentScript.ownerDocument))
+
+</script>
