@@ -3,60 +3,34 @@
 
 (function (window) {
 
-    class MyCore extends HTMLElement {
+    class MyCoreElement extends HTMLElement {
         constructor() {
             super();
         }
 
-        log(...rest) {
-            window.postMessage({
-                type: 'MY_CORE_LOG',
-                payload: {
-                    message: rest,
-                    called: true,
-                },
-            }, '*');
-        }
-
-        adopted(...args) {
-        }
-
-        attributeChanged(...args) {
-        }
-
-        connected(...args) {
-        }
-
-        disconnected(...args) {
-        }
-
         adoptedCallback(...args) {
             console.log(this, 'adoptedCallback', ...args);
-            return this.adopted(...args);
         }
 
         attributeChangedCallback(attr, oldValue, newValue) {
             console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
-            return this.attributeChanged(...args);
         }
 
         connectedCallback(...args) {
             console.log(this, 'connectedCallback', ...args);
-            return this.connected(...args);
         }
 
         disconnectedCallback(...args) {
             console.log(this, 'disconnectedCallback', ...args);
-            return this.disconnected(...args);
         }
     }
 
-    window.customElements.define('my-core', MyCore);
+    window.customElements.define('my-core', MyCoreElement);
 
     window.MyCore = {
         define(id, factory) {
             const currentDocument = document.currentScript.ownerDocument;
-            class Mixin extends MyCore {
+            const spec = factory(class extends MyCoreElement {
                 constructor() {
                     super();
 
@@ -71,12 +45,7 @@
                         //this.appendChild(currentDocument.importNode(tmpl.content, true));
                     }
                 }
-            };
-            //const spec = factory(Base, currentDocument);
-            const spec = factory(Mixin);
-            //const spec = factory(MyCore);
-            //const spec = factory(Base, window, document.currentScript.ownerDocument);
-            //const spec = factory(MyCore, );
+            });
             window.customElements.define(id, spec);
         }
     };

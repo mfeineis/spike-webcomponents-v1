@@ -89,47 +89,9 @@ body {
 <script>
 
 MyCore.define('my-layout', Core => class extends Core {
-    connected() {
-        this.log('awesome my-layout connected!');
+    connectedCallback() {
+        console.log('awesome my-layout connected!');
     }
 });
 
-</script>
-<script>
-/*
-(function (window, document) {
-
-    window.customElements.define('my-layout', class extends window.customElements.get('my-core') {
-        constructor() {
-            super();
-
-            const tmpl = document.querySelector('#my-layout-tmpl');
-
-            const shadow = this.attachShadow({ 
-                mode: "open" 
-            });
-            shadow.appendChild(document.importNode(tmpl.content, true));
-
-            //this.appendChild(document.importNode(tmpl.content, true));
-        }
-
-        adoptedCallback(...args) {
-            console.log(this, 'adoptedCallback', ...args);
-        }
-
-        attributeChangedCallback(attr, oldValue, newValue) {
-            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
-        }
-
-        connectedCallback(...args) {
-            console.log(this, 'connectedCallback', ...args);
-        }
-
-        disconnectedCallback(...args) {
-            console.log(this, 'disconnectedCallback', ...args);
-        }
-    });
-        
-}(window, document.currentScript.ownerDocument))
-*/
 </script>

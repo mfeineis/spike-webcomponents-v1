@@ -55,55 +55,9 @@ MyCore.define('my-main', Core => class extends Core {
             },
         }, '*');
     }
-    connected() {
-        this.log('awesome my-main connected!');
+    connectedCallback() {
+        console.log('awesome my-main connected!');
     }
 });
 
-</script>
-<script>
-/*
-(function (window, document) {
-
-    window.customElements.define('my-main', class extends HTMLElement {
-        constructor() {
-            super();
-
-            const tmpl = document.querySelector('#my-main-tmpl');
-
-            //const shadow = this.attachShadow({ 
-            //    mode: "open",
-            //    //mode: "closed",
-            //});
-            //shadow.appendChild(document.importNode(tmpl.content, true));
-
-            this.appendChild(document.importNode(tmpl.content, true));
-
-            window.postMessage({
-                type: 'MY_MAIN_INIT',
-                payload: {
-                    initialized: true,
-                },
-            }, '*');
-        }
-
-        adoptedCallback(...args) {
-            console.log(this, 'adoptedCallback', ...args);
-        }
-
-        attributeChangedCallback(attr, oldValue, newValue) {
-            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
-        }
-
-        connectedCallback(...args) {
-            console.log(this, 'connectedCallback', ...args);
-        }
-
-        disconnectedCallback(...args) {
-            console.log(this, 'disconnectedCallback', ...args);
-        }
-    });
-        
-}(window, document.currentScript.ownerDocument))
-*/
 </script>
