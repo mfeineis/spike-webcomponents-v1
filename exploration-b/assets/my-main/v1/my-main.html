@@ -1,8 +1,13 @@
 <link rel="import" href="../../my-core/v1/my-core.html">
-<template id="my-main-tmpl">
+<link rel="import" href="../../my-user-card/v1/my-user-card.html">
+<template auto-wire>
     <div style="background: #f60">
         <b>my-main</b>
 
+        <my-user-card></my-user-card>
+
+        <my-user-card></my-user-card>
+        
         <ul>
             <li>Content</li>
             <li>Content</li>
@@ -39,6 +44,25 @@
 </template>
 <script>
 
+MyCore.define('my-main', Core => class extends Core {
+    constructor() {
+        super();
+
+        window.postMessage({
+            type: 'MY_MAIN_INIT',
+            payload: {
+                initialized: true,
+            },
+        }, '*');
+    }
+    connected() {
+        this.log('awesome my-main connected!');
+    }
+});
+
+</script>
+<script>
+/*
 (function (window, document) {
 
     window.customElements.define('my-main', class extends HTMLElement {
@@ -81,5 +105,5 @@
     });
         
 }(window, document.currentScript.ownerDocument))
-
+*/
 </script>

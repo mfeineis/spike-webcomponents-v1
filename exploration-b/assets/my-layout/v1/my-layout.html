@@ -18,7 +18,7 @@ body {
 }
 
 </style>
-<template id="my-layout-tmpl">
+<template auto-wire>
     <style>
 
     .my-layout__container {
@@ -86,12 +86,20 @@ body {
         </div>
     </div>
 </template>
-
 <script>
 
+MyCore.define('my-layout', Core => class extends Core {
+    connected() {
+        this.log('awesome my-layout connected!');
+    }
+});
+
+</script>
+<script>
+/*
 (function (window, document) {
 
-    window.customElements.define('my-layout', class extends HTMLElement {
+    window.customElements.define('my-layout', class extends window.customElements.get('my-core') {
         constructor() {
             super();
 
@@ -123,5 +131,5 @@ body {
     });
         
 }(window, document.currentScript.ownerDocument))
-
+*/
 </script>

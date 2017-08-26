@@ -1,37 +1,86 @@
 <script src="my-core.js"></script>
 <script>
 
-(function (window, document) {
+(function (window) {
 
-    window.customElements.define('my-core', class extends HTMLElement {
+    class MyCore extends HTMLElement {
         constructor() {
             super();
         }
 
-        adoptedCallback(...args) {
-            console.log(this, 'adoptedCallback', ...args);
-        }
-
-        attributeChangedCallback(attr, oldValue, newValue) {
-            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
-        }
-
-        connectedCallback(...args) {
-            console.log(this, 'connectedCallback', ...args);
-
+        log(...rest) {
             window.postMessage({
-                type: 'MY_CORE_CONFIG_VIA_HTML',
+                type: 'MY_CORE_LOG',
                 payload: {
-                    config: 'html',
+                    message: rest,
+                    called: true,
                 },
             }, '*');
         }
 
+        adopted(...args) {
+        }
+
+        attributeChanged(...args) {
+        }
+
+        connected(...args) {
+        }
+
+        disconnected(...args) {
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+            return this.adopted(...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+            return this.attributeChanged(...args);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+            return this.connected(...args);
+        }
+
         disconnectedCallback(...args) {
             console.log(this, 'disconnectedCallback', ...args);
+            return this.disconnected(...args);
         }
-    });
-        
-}(window, document.currentScript.ownerDocument));
+    }
+
+    window.customElements.define('my-core', MyCore);
+
+    window.MyCore = {
+        define(id, factory) {
+            const currentDocument = document.currentScript.ownerDocument;
+            class Mixin extends MyCore {
+                constructor() {
+                    super();
+
+                    const tmpl = currentDocument.querySelector(`template[auto-wire]`);
+
+                    if (tmpl) {
+                        const shadow = this.attachShadow({ 
+                            mode: "open", 
+                        });
+                        shadow.appendChild(currentDocument.importNode(tmpl.content, true));
+
+                        //this.appendChild(currentDocument.importNode(tmpl.content, true));
+                    }
+                }
+            };
+            //const spec = factory(Base, currentDocument);
+            const spec = factory(Mixin);
+            //const spec = factory(MyCore);
+            //const spec = factory(Base, window, document.currentScript.ownerDocument);
+            //const spec = factory(MyCore, );
+            window.customElements.define(id, spec);
+        }
+    };
+
+}(window));
 
 </script>

@@ -1,0 +1,114 @@
+<link rel="import" href="../../my-core/v1/my-core.html">
+<template auto-wire>
+    <style>
+
+        .my-user-card__container {
+            height: 50px;
+            overflow: hidden;
+            width: 50px;
+        }
+
+    </style>
+    <div class="my-user-card__container" style="background: #06f">
+        <b>my-user-card</b>
+    </div>
+</template>
+<script>
+
+MyCore.define('my-user-card', Core => class extends Core {
+    connected() {
+        this.log('awesome my-user-card connected!');
+    }
+});
+
+</script>
+<x-script type="module">
+
+import MyCore from '../../my-core/v1/my-core';
+
+MyCore.define('my-user-card', Core => class extends Core {
+    connected() {
+        Core.log('awesome my-user-card connected!');
+        this.blubb();
+    }
+});
+
+</x-script>
+<script>
+
+/*
+window.customElements.get('my-core').define('my-user-card', Y => class extends Y {
+    connected() {
+        Y.log('awesome my-user-card connected!');
+        this.blubb();
+    }
+});
+*/
+
+/*
+(function (window, document) {
+    'use strict';
+
+    window.customElements.define('my-user-card', class extends MyCore {
+        constructor() {
+            super();
+
+            const tmpl = document.getElementById('my-user-card-tmpl');
+            this.appendChild(document.importNode(tmpl.content, true));
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'awesome connectedCallback', ...args);
+            this.blubb();
+        }
+    });
+
+}(window, document.currentScript.ownerDocument));
+*/
+
+/*
+(function (window, document) {
+
+    class extends MyCore.setup('my-user-card') {
+        constructor() {
+            super('my-user-card');
+        }
+    }
+
+    window.customElements.define('my-user-card', class extends window.customElements.get('my-core') {
+        constructor() {
+            super();
+
+            const tmpl = document.querySelector('#my-user-card-tmpl');
+
+            //const shadow = this.attachShadow({ 
+            //    mode: "open", 
+            //});
+            //shadow.appendChild(document.importNode(tmpl.content, true));
+
+            this.appendChild(document.importNode(tmpl.content, true));
+        }
+
+        adoptedCallback(...args) {
+            console.log(this, 'adoptedCallback', ...args);
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
+        }
+
+        connectedCallback(...args) {
+            console.log(this, 'connectedCallback', ...args);
+
+            this.blubb();
+        }
+
+        disconnectedCallback(...args) {
+            console.log(this, 'disconnectedCallback', ...args);
+        }
+    });
+
+}(window, document.currentScript.ownerDocument));
+*/
+
+</script>

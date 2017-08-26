@@ -1,5 +1,5 @@
 <link rel="import" href="../../my-core/v1/my-core.html">
-<template id="my-header-tmpl">
+<template auto-wire>
     <style>
 
         .my-header__container {
@@ -12,6 +12,15 @@
 </template>
 <script>
 
+MyCore.define('my-header', Core => class extends Core {
+    connected() {
+        this.log('awesome my-header connected!');
+    }
+});
+
+</script>
+<script>
+/*
 (function (window, document) {
 
     window.customElements.define('my-header', class extends HTMLElement {
@@ -46,5 +55,5 @@
     });
 
 }(window, document.currentScript.ownerDocument))
-
+*/
 </script>

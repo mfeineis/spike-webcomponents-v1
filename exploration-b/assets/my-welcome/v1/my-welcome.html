@@ -1,5 +1,5 @@
 <link rel="import" href="../../my-core/v1/my-core.html">
-<template id="my-welcome-tmpl">
+<template auto-wire>
     <style>
 
         .my-welcome__container {
@@ -12,6 +12,15 @@
 </template>
 <script>
 
+MyCore.define('my-welcome', Core => class extends Core {
+    connected() {
+        this.log('awesome my-welcome connected!');
+    }
+});
+
+</script>
+<script>
+/*
 (function (window, document) {
 
     window.customElements.define('my-welcome', class extends HTMLElement {
@@ -47,5 +56,5 @@
 
         
 }(window, document.currentScript.ownerDocument))
-
+*/
 </script>
