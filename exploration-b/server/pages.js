@@ -13,10 +13,9 @@ module.exports = {
         body: [
             ['my-layout', null, [
                 ['my-header', { slot: 'header' }],
-                ['my-debug-console', { slot: 'teaser' }],
+                ['my-debug-console', { slot: 'sidebar-right' }],
                 ['my-main', { slot: 'main' }],
                 ['my-welcome', { slot: 'sidebar-left' }],
-                ['my-welcome', { slot: 'sidebar-right' }],
             ]],
         ],
     },
