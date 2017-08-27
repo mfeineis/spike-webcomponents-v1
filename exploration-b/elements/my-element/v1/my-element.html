@@ -1,9 +1,10 @@
 <link rel="import" href="../../my-core/v1/my-core.html">
 <script>
 
-(function (window) {
+(function (window, VERSION) {
 
-    if (window.MyElement) {
+    if (window.MyElement && window.MyElement.version > VERSION) {
+        console.error(`There is already a more recent version available ${window.MyElement.version} > ${VERSION}.`);
         return;
     }
 
@@ -61,6 +62,7 @@
     }
 
     function define(id, factory) {
+        console.log(`Defining ${id}...`);
         const currentDocument = document.currentScript.ownerDocument;
         const spec = factory(class extends MyBaseElement {
             constructor() {
@@ -72,9 +74,10 @@
     }
 
     window.MyElement = {
+        version: VERSION,
         define,
     };
 
-}(window));
+}(window, 1));
 
 </script>

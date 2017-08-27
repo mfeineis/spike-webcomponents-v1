@@ -13,14 +13,24 @@ const getDirectories = path =>
 const getVersions = element =>
     getDirectories(`${ELEMENTS_PATH}/${element}`);
 
-const sanitizeTagName = tag => tag.trim();
+const selfClosingTags = new Set([
+    'link',
+    'meta',
+]);
+const sanitizeTagName = unsafeTag => { 
+    const tag = unsafeTag.toLowerCase().trim();
+    return {
+        tag, 
+        selfClosing: selfClosingTags.has(tag),
+    };
+};
 const sanitizeAttributeName = name => name.trim();
 const sanitizeAttributeValue = value => value.trim();
 const sanitizeTextNodeValue = (tag, value) => value.trim();
 
 function importElement({ tag, version }) {
     const knownVersions = getVersions(tag);
-    console.log(`importing <${tag}>@${version}, known versions: ${knownVersions.join(',')}`);
+    console.log(`importing <${tag} version="${version}">, known versions: ${knownVersions.join(',')}`);
 
     return ['link', { 
         rel: 'import', 
@@ -35,7 +45,7 @@ function createAttributes(tag, attrs) {
 
     const result = [''];
 
-    Object.keys(attrs).forEach(attr => {
+    Object.keys(attrs).sort().forEach(attr => {
         const name = sanitizeAttributeName(attr);
         const value = sanitizeAttributeValue(attrs[attr]);
         result.push(`${name}="${value}"`);
@@ -44,19 +54,22 @@ function createAttributes(tag, attrs) {
     return result.join(' ');
 }
 
-function h(unsafeTag, attrs = {}, children = []) {
-    const tag = sanitizeTagName(unsafeTag);
-    return [
-        `<${tag}${createAttributes(tag, attrs)}>`,
-        typeof children === 'string' 
-            ? sanitizeTextNodeValue(tag, children) 
-            : children.map(child => h(...child)).join(''),
-        `</${tag}>`,
-    ].join('');
+function h(unsafeTag, unsafeAttrs = null, unsafeChildren = []) {
+    const { tag, selfClosing } = sanitizeTagName(unsafeTag);
+    const result = [
+        `<${tag}${createAttributes(tag, unsafeAttrs)}${selfClosing ? '/' : ''}>`,
+        typeof unsafeChildren === 'string' 
+            ? sanitizeTextNodeValue(tag, unsafeChildren) 
+            : unsafeChildren.map(child => h(...child)).join(''),
+    ];
+    if (!selfClosing) {
+        result.push(`</${tag}>`);
+    }
+    return result.join('');
 }
 
 function render(page) {
-    console.log(`rendering ${page.title}...`);
+    console.log(`\nrendering ${page.title}...`);
 
     const { body, elements, locale, title } = page;
 
@@ -82,9 +95,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/lib', 
-    express.static(join(__dirname, 'lib')))
+    express.static(join(__dirname, 'lib')));
 
 app.use(`/${ELEMENTS_PATH}`, 
-    express.static(join(__dirname, `${ELEMENTS_PATH}`)))
+    express.static(join(__dirname, `${ELEMENTS_PATH}`)));
 
 app.listen(3000, () => console.log('Listening on port 3000...'));
