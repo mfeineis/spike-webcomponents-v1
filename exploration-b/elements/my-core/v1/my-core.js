@@ -17,7 +17,8 @@
                 }
             });
         } else {
-            const worker = new Worker('assets/my-core/v1/my-core.js');
+            //const worker = new Worker('assets/my-core/v1/my-core.js');
+            const worker = new Worker(window["document"].currentScript.src);
             setupMain(window, window["document"], console, worker);
         }
     } else {
@@ -26,6 +27,28 @@
 
 }(this, function setupMain(window, document, console, worker) {
     console.log(`<my-core> [LOG] ${setupMain.name}`, window, document, console, worker);
+
+    if (typeof window.CustomEvent !== "function") {
+        window.CustomEvent = function CustomEvent(event, params) {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            var evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        };
+        window.CustomEvent.prototype = window.Event.prototype;
+    }
+
+    document.addEventListener('my-core-custom-event', function (e) {
+        if (e.detail.type === 'MY_CORE_CONNECT_ELEMENT') {
+
+            window.postMessage({
+                type: 'SOME_DATA',
+                payload: {
+                    someData: true,
+                },
+            }, '*');
+        }
+    })
 
     function handleMessage(e, ...rest) {
         console.log('<my-core>.onmessage', 'from', e.origin, 'with data', e.data, 'trustworthy?', e.target === worker || e.target === window, e);

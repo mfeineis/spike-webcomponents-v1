@@ -1,0 +1,15 @@
+{
+  "name": "exploration-b",
+  "version": "0.0.1",
+  "description": "A PoC for frontend mashups with the help of basic webcomponents",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Feineis",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}

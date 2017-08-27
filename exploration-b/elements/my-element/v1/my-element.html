@@ -1,35 +1,13 @@
-<script src="my-core.js"></script>
+<link rel="import" href="../../my-core/v1/my-core.html">
 <script>
 
 (function (window) {
 
-    if (window.MyCore) {
+    if (window.MyElement) {
         return;
     }
 
-    if (typeof window.CustomEvent !== "function") {
-        window.CustomEvent = function CustomEvent(event, params) {
-            params = params || { bubbles: false, cancelable: false, detail: undefined };
-            var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-            return evt;
-        };
-        window.CustomEvent.prototype = window.Event.prototype;
-    }
-
-    document.addEventListener('my-core-custom-event', function (e) {
-        if (e.detail.type === 'MY_CORE_CONNECT_ELEMENT') {
-
-            window.postMessage({
-                type: 'SOME_DATA',
-                payload: {
-                    someData: true,
-                },
-            }, '*');
-        }
-    })
-
-    class MyCoreElement extends HTMLElement {
+    class MyBaseElement extends HTMLElement {
         dispatch(message) {
             this.dispatchEvent(new CustomEvent('my-core-custom-event', {
                 bubbles: true, // A Boolean indicating whether the event bubbles. The default is false.
@@ -65,11 +43,9 @@
         }
 
         receiveMessage(e) {
-            console.log('MyCore::receiveMessage', e.origin, e.data);
+            console.log(this, 'MyElement::receiveMessage', e.origin, e.data);
         }
     }
-
-    window.customElements.define('my-core', MyCoreElement);
 
     function autoWireTemplate(element, currentDocument) {
         const tmpl = currentDocument.querySelector(`template[auto-wire]`);
@@ -86,7 +62,7 @@
 
     function define(id, factory) {
         const currentDocument = document.currentScript.ownerDocument;
-        const spec = factory(class extends MyCoreElement {
+        const spec = factory(class extends MyBaseElement {
             constructor() {
                 super();
                 autoWireTemplate(this, currentDocument);
@@ -95,7 +71,7 @@
         window.customElements.define(id, spec);
     }
 
-    window.MyCore = {
+    window.MyElement = {
         define,
     };
 
