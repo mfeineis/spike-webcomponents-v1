@@ -48,15 +48,14 @@ window.customElements.define('my-user-card', class extends HTMLElement {
 
         window.postMessage({
             type: 'MY_CORE_CONNECT_ELEMENT',
-            payload: {
-                topics: [
-                    'SOME_DATA',
-                ],
-            },
+            payload: {},
         }, '*');
+
+        //setTimeout(() => this.parentNode.removeChild(this), 2000);
     }
 
     disconnectedCallback() {
+        console.log('awesome my-user-card disconnected!');
         window.removeEventListener('message', this.handler);
     }
 });

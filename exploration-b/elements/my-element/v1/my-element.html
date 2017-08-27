@@ -57,13 +57,16 @@
             });
             shadow.appendChild(currentDocument.importNode(tmpl.content, true));
 
-            //this.appendChild(currentDocument.importNode(tmpl.content, true));
+            //element.appendChild(currentDocument.importNode(tmpl.content, true));
         }
     }
 
     function define(id, factory) {
         console.log(`Defining ${id}...`);
-        const currentDocument = document.currentScript.ownerDocument;
+        const currentDocument = document.currentScript
+            ? document.currentScript.ownerDocument
+            : document;
+
         const spec = factory(class extends MyBaseElement {
             constructor() {
                 super();
@@ -71,11 +74,12 @@
             }
         });
         window.customElements.define(id, spec);
+        console.log(`Done defining ${id}.`);
     }
 
     window.MyElement = {
-        version: VERSION,
         define,
+        version: VERSION,
     };
 
 }(window, 1));

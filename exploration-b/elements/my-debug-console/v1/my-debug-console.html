@@ -1,0 +1,22 @@
+<link rel="import" href="../../my-element/v1/my-element.html">
+<template auto-wire>
+    <style>
+
+        .my-debug-console__container {
+            background: #eee;
+        }
+
+    </style>
+    <div class="my-debug-console__container">
+        <b>my-debug-console</b>
+    </div>
+</template>
+<script>
+
+MyElement.define('my-debug-console', Core => class extends Core {
+    connectedCallback() {
+        console.log('awesome my-debug-console connected!');
+    }
+});
+
+</script>

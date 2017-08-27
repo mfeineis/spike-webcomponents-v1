@@ -13,8 +13,22 @@
 <script>
 
 MyElement.define('my-header', Core => class extends Core {
+    constructor() {
+        super();
+        console.log('  awesome my-header constructed.');
+    }
+    adoptedCallback() {
+        console.log('  awesome my-header adopted.');
+    }
+    attributeChangedCallback(...rest) {
+        console.log('  awesome my-header attributeChanged.', rest);
+    }
     connectedCallback() {
-        console.log('awesome my-header connected!');
+        console.log('  awesome my-header connected.');
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        console.log('  awesome my-header disconnected.');
     }
 });
 

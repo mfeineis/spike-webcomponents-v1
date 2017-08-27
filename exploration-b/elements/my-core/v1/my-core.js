@@ -2,7 +2,7 @@
     "use strict";
 
     const isWorker = typeof window["document"] === "undefined";
-    const supportsWorker = isWorker || typeof window["Worker"] !== "undefined";
+    const supportsWorker = false;// isWorker || typeof window["Worker"] !== "undefined";
 
     if (supportsWorker) {
         if (isWorker) {
@@ -26,7 +26,7 @@
     }
 
 }(this, function setupMain(window, document, console, worker) {
-    console.log(`<my-core> [LOG] ${setupMain.name}`, window, document, console, worker);
+    console.log(`<my-core>.${setupMain.name} init...`, window, document, console, worker);
 
     if (typeof window.CustomEvent !== "function") {
         window.CustomEvent = function CustomEvent(event, params) {
@@ -50,15 +50,21 @@
         }
     })
 
-    function handleMessage(e, ...rest) {
-        console.log('<my-core>.onmessage', 'from', e.origin, 'with data', e.data, 'trustworthy?', e.target === worker || e.target === window, e);
-    }
-
-    window.addEventListener('message', handleMessage);
+    window.addEventListener('message', function handleMessage(e) {
+        const trustworthy = e.target === worker || e.target === window;
+        console.log('    window.onmessage from', e.origin, e.data);
+    });
 
     if (worker !== window) {
-        worker.addEventListener('message', function handleMessage(e, ...rest) {
-            console.log('<my-core>.onmessage', 'from worker', 'with data', e.data, 'trustworthy?', e.target === worker || e.target === window, e);
+        worker.addEventListener('message', function handleMessage(e) {
+            const trustworthy = e.target === worker || e.target === window;
+
+            if (e.data.type === 'MY_CORE_LOG') {
+                console.log(...e.data.payload.args)
+                return;
+            }
+
+            console.log('    worker.onmessage from', 'worker', e.data);
 
             if (e.data.type === 'MY_CORE_WORKER_HANDSHAKE') {
                 worker.postMessage({
@@ -73,10 +79,10 @@
 
     const body = document.body;
     body.classList.add('my-core--initialized');
-    console.log("<my-core> [LOG] <body>", body);
+    console.log(`<my-core>.${setupMain.name} done.`, body);
 
 }, function setupWorker(window, document, console) {
-    console.log(`<my-core> [LOG] ${setupWorker.name}`);
+    console.log(`<my-core>.${setupWorker.name} init...`);
 
     window.postMessage({
         type: 'MY_CORE_WORKER_HANDSHAKE',
@@ -88,4 +94,6 @@
     window.addEventListener('message', function (e) {
         console.log(`<my-core> [LOG] Worker thanks you for your message`, 'from', e.origin, e.data);
     });
+
+    console.log(`<my-core>.${setupWorker.name} done.`);
 }));

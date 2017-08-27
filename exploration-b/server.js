@@ -57,7 +57,7 @@ function createAttributes(tag, attrs) {
 function h(unsafeTag, unsafeAttrs = null, unsafeChildren = []) {
     const { tag, selfClosing } = sanitizeTagName(unsafeTag);
     const result = [
-        `<${tag}${createAttributes(tag, unsafeAttrs)}${selfClosing ? '/' : ''}>`,
+        `<${tag}${createAttributes(tag, unsafeAttrs)}>`,
         typeof unsafeChildren === 'string' 
             ? sanitizeTextNodeValue(tag, unsafeChildren) 
             : unsafeChildren.map(child => h(...child)).join(''),
