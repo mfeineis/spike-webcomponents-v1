@@ -28,8 +28,36 @@ window.customElements.define('my-user-card', class extends HTMLElement {
         shadow.appendChild(document.importNode(tmpl.content, true));
     }
 
+    onMessage({ data, origin }) {
+        //console.log(this, data, 'on', origin);
+        const { type, payload } = data;
+
+        switch (type) {
+            case 'MY_CORE_CONNECT_ELEMENT':
+                console.info(type, payload);
+                break;
+        }
+    }
+
     connectedCallback() {
         console.log('awesome my-user-card connected!');
+
+        const handler = this.handler = e => this.onMessage(e);
+
+        window.addEventListener('message', handler);
+
+        window.postMessage({
+            type: 'MY_CORE_CONNECT_ELEMENT',
+            payload: {
+                topics: [
+                    'SOME_DATA',
+                ],
+            },
+        }, '*');
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('message', this.handler);
     }
 });
 

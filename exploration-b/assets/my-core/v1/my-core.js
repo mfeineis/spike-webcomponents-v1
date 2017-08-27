@@ -49,12 +49,6 @@
     }
 
     const body = document.body;
-
-    if (body.classList.contains('my-core--initialized')) {
-        console.log('<my-core> already initialized, bailing out...');
-        return;
-    }
-
     body.classList.add('my-core--initialized');
     console.log("<my-core> [LOG] <body>", body);
 

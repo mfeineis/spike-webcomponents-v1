@@ -3,51 +3,41 @@
 
 (function (window) {
 
+    if (window.MyCore) {
+        return;
+    }
+
     class MyCoreElement extends HTMLElement {
-        constructor() {
-            super();
-        }
-
-        adoptedCallback(...args) {
-            console.log(this, 'adoptedCallback', ...args);
-        }
-
-        attributeChangedCallback(attr, oldValue, newValue) {
-            console.log(this, 'attributeChangedCallback', attr, oldValue, newValue);
-        }
-
-        connectedCallback(...args) {
-            console.log(this, 'connectedCallback', ...args);
-        }
-
-        disconnectedCallback(...args) {
-            console.log(this, 'disconnectedCallback', ...args);
-        }
     }
 
     window.customElements.define('my-core', MyCoreElement);
 
-    window.MyCore = {
-        define(id, factory) {
-            const currentDocument = document.currentScript.ownerDocument;
-            const spec = factory(class extends MyCoreElement {
-                constructor() {
-                    super();
+    function autoWireTemplate(element, currentDocument) {
+        const tmpl = currentDocument.querySelector(`template[auto-wire]`);
 
-                    const tmpl = currentDocument.querySelector(`template[auto-wire]`);
-
-                    if (tmpl) {
-                        const shadow = this.attachShadow({ 
-                            mode: "open", 
-                        });
-                        shadow.appendChild(currentDocument.importNode(tmpl.content, true));
-
-                        //this.appendChild(currentDocument.importNode(tmpl.content, true));
-                    }
-                }
+        if (tmpl) {
+            const shadow = element.attachShadow({ 
+                mode: "open", 
             });
-            window.customElements.define(id, spec);
+            shadow.appendChild(currentDocument.importNode(tmpl.content, true));
+
+            //this.appendChild(currentDocument.importNode(tmpl.content, true));
         }
+    }
+
+    function define(id, factory) {
+        const currentDocument = document.currentScript.ownerDocument;
+        const spec = factory(class extends MyCoreElement {
+            constructor() {
+                super();
+                autoWireTemplate(this, currentDocument);
+            }
+        });
+        window.customElements.define(id, spec);
+    }
+
+    window.MyCore = {
+        define,
     };
 
 }(window));
