@@ -91,6 +91,17 @@ body {
 MyCore.define('my-layout', Core => class extends Core {
     connectedCallback() {
         console.log('awesome my-layout connected!');
+
+        this.registerTopics(['SOME_DATA']);
+
+        this.addEventListener('click', function (e) {
+            this.dispatch({
+                type: 'MY_CORE_CONNECT_ELEMENT',
+            });
+        });
+    }
+    receiveMessage({ data, origin }) {
+        console.log(this, 'receiveMessage', origin, data);
     }
 });
 

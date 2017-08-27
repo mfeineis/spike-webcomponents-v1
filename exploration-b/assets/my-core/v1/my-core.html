@@ -7,7 +7,66 @@
         return;
     }
 
+    if (typeof window.CustomEvent !== "function") {
+        window.CustomEvent = function CustomEvent(event, params) {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            var evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        };
+        window.CustomEvent.prototype = window.Event.prototype;
+    }
+
+    document.addEventListener('my-core-custom-event', function (e) {
+        if (e.detail.type === 'MY_CORE_CONNECT_ELEMENT') {
+
+            window.postMessage({
+                type: 'SOME_DATA',
+                payload: {
+                    someData: true,
+                },
+            }, '*');
+        }
+    })
+
     class MyCoreElement extends HTMLElement {
+        dispatch(message) {
+            this.dispatchEvent(new CustomEvent('my-core-custom-event', {
+                bubbles: true, // A Boolean indicating whether the event bubbles. The default is false.
+                cancelable: false, // A Boolean indicating whether the event can be canceled. The default is false.
+                composed: true, // A Boolean indicating whether the event will trigger listeners outside of a shadow root. The default is false.
+                detail: {
+                    // optional and defaulting to null, of type any, that is an event-dependent value associated with the event.
+                    type: message.type,
+                    payload: message.payload,
+                },
+            }));
+        }
+
+        disconnectedCallback() {
+            if (!this._handlers) {
+                return;
+            } 
+
+            this._subscriptions.forEach(({ topic, handler }) => {
+                this.removeEventListener(topic, handler);
+            });
+        }
+
+        registerTopics(topics) {
+            this._subscriptions = topics.map(topic => {
+                const handler = e => this.receiveMessage(e);
+                this.addEventListener(topic, handler);
+                return {
+                    topic,
+                    handler,
+                };
+            });
+        }
+
+        receiveMessage(e) {
+            console.log('MyCore::receiveMessage', e.origin, e.data);
+        }
     }
 
     window.customElements.define('my-core', MyCoreElement);
