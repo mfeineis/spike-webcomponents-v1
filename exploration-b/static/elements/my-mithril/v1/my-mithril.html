@@ -1,0 +1,22 @@
+<script src="../../../lib/mithril-1.1.3.js"></script>
+<script>
+
+(function (m) {
+
+const MyMithril = {
+    view: ({ attrs, children }) =>
+        m('div', { class: 'mithril-outer' }, [
+            m('span', { class: 'mithril-inner' }, 'Mithril is easy.'),
+        ]),
+};
+
+window.customElements.define('my-mithril', class extends HTMLElement {
+    connectedCallback() {
+        console.log('awesome my-mithril connected!');
+        m.mount(this, MyMithril);
+    }
+});
+
+}(m));
+
+</script>

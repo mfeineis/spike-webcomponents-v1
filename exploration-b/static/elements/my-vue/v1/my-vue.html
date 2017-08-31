@@ -1,0 +1,42 @@
+<script src="../../../lib/vue-2.4.2.js"></script>
+<script>
+
+(function (Vue) {
+
+Vue.component('todo-item', {
+    props: ['todo'],
+    template: '<li>{{ todo.text }}</li>',
+});
+
+window.customElements.define('my-vue', class extends HTMLElement {
+    connectedCallback() {
+        this.app = new Vue({
+            el: this,
+            template: `
+                <div class="my-vue__container">
+                    <ol>
+                        <todo-item
+                        v-for="item in groceryList"
+                        v-bind:todo="item"
+                        v-bind:key="item.id">
+                        </todo-item>
+                    </ol>
+                </div>
+            `,
+            data: {
+                groceryList: [
+                    { id: 0, text: 'Vegetables' },
+                    { id: 1, text: 'Cheese' },
+                    { id: 2, text: 'Whatever else humans are supposed to eat' },
+                ],
+            },
+        });
+    }
+    disconnectedCallback() {
+        this.app = null;
+    }
+});
+
+}(Vue));
+
+</script>
