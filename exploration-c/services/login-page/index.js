@@ -21,11 +21,11 @@ const render = ({ script }) => (
 app.get('/login-page/v1/render', (req, res) => {
     const token = req.query.token || 'UNDEFINED_TOKEN';
     const clientJs = path.join(__dirname, './src/client.js');
-    fs.readFile(clientJs, 'utf-8', (err, data) => {
+    fs.readFile(clientJs, 'utf-8', (err, text) => {
         if (err) { res.send(`${err}`); return; }
 
         res.send(render({
-            script: data.replace(/%%ACCESS_TOKEN%%/g, token),
+            script: text.replace(/%%ACCESS_TOKEN%%/g, token),
         }));
     });
 });
